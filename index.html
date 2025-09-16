@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Public Health Awareness Chatbot</title>
+  <title>Healthcare Bot</title>
   <style>
-    /* ===== Body & Layout ===== */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
@@ -12,264 +11,181 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
       background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
     }
 
-    /* ===== Canvas Background ===== */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* ===== Chat Container ===== */
     .chat-container {
-      width: 600px;
-      height: 660px;
-      background: rgba(30, 30, 30, 0.8);
-      border-radius: 25px;
-      backdrop-filter: blur(20px);
+      width: 450px;   /* reduced */
+      height: 600px;  /* reduced */
+      background: rgba(30, 30, 30, 0.85);
+      border-radius: 20px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       overflow: hidden;
-      z-index: 1;
     }
 
-    /* ===== Header ===== */
     .chat-header {
-      background: rgba(50, 50, 50, 0.7);
-      padding: 18px;
+      background: rgba(50,50,50,0.7);
+      padding: 15px;
       text-align: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
-      color: #f0f0f0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      position: relative;
     }
 
-    /* ===== Chat Box ===== */
+    .emergency-btn {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      background: red;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
     .chat-box {
       flex: 1;
-      padding: 20px;
+      padding: 15px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
 
-    /* ===== Messages ===== */
     .chat-message {
-      margin: 10px 0;
-      padding: 16px 22px;
-      border-radius: 28px;
+      margin: 8px 0;
+      padding: 12px 18px;
+      border-radius: 20px;
       max-width: 75%;
       word-wrap: break-word;
       line-height: 1.6;
-      font-size: 15px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-      transition: transform 0.2s ease;
+      font-size: 14px;
     }
 
     .chat-message.user {
       background: linear-gradient(135deg, #4facfe, #00f2fe);
       color: #fff;
       align-self: flex-end;
-      border-bottom-right-radius: 6px;
-      transform: translateX(0);
-    }
-
-    .chat-message.user:hover {
-      transform: translateX(-2px);
     }
 
     .chat-message.bot {
       background: rgba(255,255,255,0.1);
       color: #f0f0f0;
       align-self: flex-start;
-      border-bottom-left-radius: 6px;
-      transform: translateX(0);
-      opacity: 0;
-      animation: fadeIn 0.6s forwards;
     }
 
-    .chat-message.bot:hover {
-      transform: translateX(2px);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== Typing Animation ===== */
-    .typing {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      margin: 10px 0;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      border-radius: 50%;
-      animation: blink 1.4s infinite both;
-    }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes blink {
-      0% { opacity: 0.2; }
-      20% { opacity: 1; }
-      100% { opacity: 0.2; }
-    }
-
-    /* ===== Input Area ===== */
     .chat-input {
       display: flex;
+      padding: 10px;
       border-top: 1px solid rgba(255,255,255,0.1);
-      background: rgba(40, 40, 40, 0.85);
-      padding: 12px;
+      background: rgba(40,40,40,0.85);
     }
 
     .chat-input input {
       flex: 1;
-      padding: 14px;
+      padding: 10px;
       border: none;
-      border-radius: 25px;
+      border-radius: 20px;
       outline: none;
-      font-size: 15px;
+      font-size: 14px;
       background: rgba(255,255,255,0.1);
       color: #f0f0f0;
-      margin-right: 10px;
-      transition: 0.3s;
-    }
-    .chat-input input::placeholder {
-      color: #aaa;
-    }
-    .chat-input input:focus {
-      background: rgba(255,255,255,0.15);
+      margin-right: 8px;
     }
 
     .chat-input button {
       border: none;
       background: linear-gradient(135deg, #4facfe, #00f2fe);
       color: white;
-      padding: 0 22px;
-      border-radius: 25px;
+      padding: 0 15px;
+      border-radius: 20px;
       cursor: pointer;
-      transition: 0.3s;
-      font-size: 16px;
+      font-size: 14px;
     }
-    .chat-input button:hover {
-      opacity: 0.85;
-    }
+    /* WhatsApp-style typing animation */
+.typing {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background-color: #e0e0e0; /* bubble color */
+  border-radius: 20px;
+  max-width: 80px;
+}
 
-    /* ===== Scrollbar Styling ===== */
-    .chat-box::-webkit-scrollbar {
-      width: 6px;
-    }
-    .chat-box::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-    }
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4f58fe; /* dot color */
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+.chat-upload {
+  margin-left: 5px;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+.chat-upload::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.chat-upload::before {
+  content: "📁";  /* Shows folder icon */
+  display: inline-block;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+}
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
-
   <div class="chat-container">
-    <div class="chat-header"> Healthcare Bot</div>
+    <div class="chat-header">
+      Healthcare Bot
+      <button class="emergency-btn" onclick="openHospitals()">🚨</button>
+    </div>
     <div class="chat-box" id="chat-box">
       <div class="chat-message bot">Hello! 👋 Ask me about any disease to learn more.</div>
     </div>
     <div class="chat-input">
-      <input type="text" id="user-input" placeholder="Type your message...">
-      <button onclick="sendMessage()">➤</button>
-    </div>
+  <!-- 1. Text input -->
+  <input type="text" id="user-input" placeholder="Type your message...">
+
+  <!-- 2. Send button -->
+  <button id="send-btn">➤</button>
+
+  <!-- 3. Image upload button (styled as a button) -->
+  <button id="image-btn">📁</button>
+  <input type="file" id="image-input" accept="image/*" style="display:none;">
+
+  <!-- 4. Mic button -->
+  <button id="mic-btn">🎤</button>
+</div>
   </div>
 
-  <!-- Chatbot JS -->
-   <script src="index.js"></script>
+  <script src="index.js"></script>
   <script src="ai.js"></script>
-
-
-  <!-- Enter key support -->
-  <script>
-    document.getElementById("user-input").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        sendMessage();
-      }
-    });
-  </script>
-
-  <!-- Background Animation -->
-  <script>
-    const canvas = document.getElementById("bgCanvas");
-    const ctx = canvas.getContext("2d");
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    class Circle {
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.radius = Math.random() * 12 + 4;
-        this.speedX = (Math.random() - 0.5) * 0.2; // slower speed
-        this.speedY = (Math.random() - 0.5) * 0.2; // slower speed
-        this.alpha = Math.random() * 0.6 + 0.2;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        if(this.x < 0 || this.x > width) this.speedX *= -1;
-        if(this.y < 0 || this.y > height) this.speedY *= -1;
-      }
-      draw(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = rgba(255, 255, 255, ${this.alpha});
-        ctx.fill();
-      }
-    }
-
-    const circles = [];
-    for(let i=0; i < 30; i++) {
-      circles.push(new Circle());
-    }
-
-    function animate() {
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, "#1c1c1e");
-      gradient.addColorStop(1, "#2c2c2e");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      for(const circle of circles) {
-        circle.update();
-        circle.draw(ctx);
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener("resize", () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-    });
-  </script>
 </body>
 </html>

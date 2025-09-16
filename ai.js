@@ -1,4 +1,4 @@
-const API_KEY = "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";
+const API_KEY = "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"; // put your OpenRouter API key here
 
 async function getAIResponse(userMessage) {
   try {
@@ -9,7 +9,7 @@ async function getAIResponse(userMessage) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo", // you can change model if needed
+        model: "openai/gpt-3.5-turbo",
         messages: [{ role: "user", content: userMessage }]
       })
     });
