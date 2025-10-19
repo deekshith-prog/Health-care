@@ -160,5 +160,6 @@ document.getElementById("image-btn").addEventListener("click", () => {
 // ---------------- Dummy Function: Image Description ----------------
 async function getImageDescription(file) {
   return "📝 This appears to be a medicine or report. Please follow the instructions on the label or consult your doctor.";
-print("hello")
+print("hello hi")
 }
+
